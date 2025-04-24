@@ -5,7 +5,7 @@
 }
     
 body {
-    display: flex;
+    display: none; /* flex pour affiche en jeux OU none pour rien affiche */
     background: rgba(0, 0, 0, 0.8);
     color: white;
     font-family: Arial, sans-serif;
