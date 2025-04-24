@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Météo - FiveM</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="weatherContainer">
+        <h1>Météo actuelle :</h1>
+        <div id="weatherDisplay">
+            <p id="currentWeather">Chargement...</p>
+            <p id="timestamp"></p>
+            <button class="button-cls" onclick="fetch(`https://${GetParentResourceName()}/close`, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: '{}' })">Fermer</button>
+
+        </div>
+
+        
+    </div>
+    <script src="./script.js"></script>
+ 
+    <script>
+        const socket = new WebSocket("ws://localhost:3000");
+
+
+        socket.onmessage = function(event) {
+    const data = JSON.parse(event.data);
+    document.getElementById("currentWeather").innerText = data.meteo;
+    document.getElementById("timestamp").innerText = "Dernière mise à jour : " + data.timestamp;
+    
+    if (event.data.show === true) {
+        document.body.style.display = "flex"; // ou "block" selon ton layout
+    }
+};
+
+    </script>
+
+</body>
+</html>

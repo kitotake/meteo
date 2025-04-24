@@ -1,0 +1,19 @@
+{
+  "name": "meteo",
+  "version": "1.0",
+  "description": "Un système de météo pour serveur FiveM avec affichage externe ",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "kitotake",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "body-parser": "^2.2.0",
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "ws": "^8.18.1"
+  }
+}
