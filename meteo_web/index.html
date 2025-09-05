@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Météo - FiveM</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="connection-status" id="connectionStatus"></div>
+    
+    <div id="weatherContainer" class="fade-in">
+        <h1>🌦️ Météo actuelle</h1>
+        
+        <div class="time-display">
+            <div id="currentTime">--:--</div>
+            <small>Heure du serveur</small>
+        </div>
+        
+        <div id="weatherDisplay">
+            <span class="weather-icon" id="weatherIcon">🌤️</span>
+            
+            <p id="currentWeather">Chargement...</p>
+                       
+            <div class="weather-stats">
+                <div class="stat-item">
+                    <div class="stat-value" id="weatherDuration">0m</div>
+                    <div class="stat-label">Durée</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="serverPlayers">--</div>
+                    <div class="stat-label">Joueurs</div>
+                </div>
+            </div>
+            
+       
+            <p id="timestamp">En attente de données...</p>
+        </div>
+
+
+        <div class="controls">
+            <button class="button-cls" onclick="closeInterface()">Fermer</button>
+            <button class="button-cls button-secondary" onclick="refreshData()">Actualiser</button>
+        </div>
+    </div>
+
+    <script src="./script.js"></script>
+    <script>
+        
+        let socket;
+        let weatherStartTime = Date.now();
+        let currentWeatherType = '';
+        let reconnectAttempts = 0;
+        const maxReconnectAttempts = 5;
+
+        const weatherIcons = {
+            'EXTRASUNNY': '☀️',
+            'CLEAR': '🌤️', 
+            'CLOUDS': '☁️',
+            'OVERCAST': '☁️',
+            'SMOG': '🌫️',
+            'FOGGY': '🌫️',
+            'RAIN': '🌧️',
+            'THUNDER': '⛈️',
+            'CLEARING': '🌤️',
+            'SNOW': '❄️',
+            'SNOWLIGHT': '🌨️',
+            'XMAS': '🎄',
+            'BLIZZARD': '🌨️',
+            'NEUTRAL': '🌤️'
+        };
+
+        function initWebSocket() {
+            try {
+                socket = new WebSocket("ws://localhost:3000");
+                
+                socket.onopen = function() {
+                    console.log("WebSocket connecté");
+                    updateConnectionStatus(true);
+                    reconnectAttempts = 0;
+                };
+                
+                socket.onmessage = function(event) {
+                    try {
+                        const data = JSON.parse(event.data);
+                        updateWeatherDisplay(data.meteo, data.timestamp);
+                    } catch (e) {
+                        console.error("Erreur parsing WebSocket:", e);
+                    }
+                };
+                
+                socket.onclose = function() {
+                    console.log("WebSocket déconnecté");
+                    updateConnectionStatus(false);
+                    attemptReconnect();
+                };
+                
+                socket.onerror = function(error) {
+                    console.error("Erreur WebSocket:", error);
+                    updateConnectionStatus(false);
+                };
+                
+            } catch (e) {
+                console.error("Erreur initialisation WebSocket:", e);
+                updateConnectionStatus(false);
+            }
+        }
+
+      
+        function attemptReconnect() {
+            if (reconnectAttempts < maxReconnectAttempts) {
+                reconnectAttempts++;
+                console.log(`Tentative de reconnexion ${reconnectAttempts}/${maxReconnectAttempts}`);
+                setTimeout(initWebSocket, 2000 * reconnectAttempts);
+            }
+        }
+
+       
+        function updateConnectionStatus(connected) {
+            const status = document.getElementById('connectionStatus');
+            if (connected) {
+                status.classList.remove('disconnected');
+            } else {
+                status.classList.add('disconnected');
+            }
+        }
+
+        window.addEventListener("message", function (event) {
+            if (event.data.type === "meteo:update") {
+                updateWeatherDisplay(event.data.meteo, event.data.timestamp);
+            }
+            
+            if (event.data.show === true) {
+                document.body.style.display = "flex";
+                updateCurrentTime();
+            }
+        });
+
+        function updateWeatherDisplay(weather, timestamp) {
+            const weatherElement = document.getElementById("currentWeather");
+            const iconElement = document.getElementById("weatherIcon");
+            const timestampElement = document.getElementById("timestamp");
+            
+            if (currentWeatherType !== weather && currentWeatherType !== '') {
+                weatherElement.classList.add('weather-update');
+                setTimeout(() => {
+                    weatherElement.classList.remove('weather-update');
+                }, 600);
+                
+                weatherStartTime = Date.now();
+            }
+            
+            currentWeatherType = weather;
+            
+            weatherElement.textContent = weather;
+            iconElement.textContent = weatherIcons[weather] || '🌤️';
+            timestampElement.textContent = `Dernière mise à jour : ${timestamp}`;
+            
+            updateWeatherStats();
+        }
+
+        function updateWeatherStats() {
+            const duration = Math.floor((Date.now() - weatherStartTime) / 60000);
+            document.getElementById("weatherDuration").textContent = duration + 'm';
+            
+            const players = Math.floor(Math.random() * 32) + 1;
+            document.getElementById("serverPlayers").textContent = players;
+        }
+
+        function updateCurrentTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('fr-FR', { 
+                hour: '2-digit', 
+                minute: '2-digit' 
+            });
+            document.getElementById("currentTime").textContent = timeString;
+        }
+
+        function closeInterface() {
+            document.body.style.display = "none";
+            
+            if (typeof GetParentResourceName !== 'undefined') {
+                fetch(`https://${GetParentResourceName()}/close`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: '{}'
+                }).catch(e => console.log("Pas en jeu"));
+            }
+        }
+
+        function refreshData() {
+            updateCurrentTime();
+            updateWeatherStats();
+            
+            if (typeof GetParentResourceName !== 'undefined') {
+                fetch(`https://${GetParentResourceName()}/refresh`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: '{}'
+                }).catch(e => console.log("Pas en jeu"));
+            }
+        }
+  
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeInterface();
+            }
+        });
+ 
+        document.addEventListener('DOMContentLoaded', function() {
+            initWebSocket();
+            updateCurrentTime();
+            setInterval(updateCurrentTime, 1000);
+            setInterval(updateWeatherStats, 30000);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,232 @@
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+    
+body {
+    display: none; /* Hidden until JS shows it */ 
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    font-family: Arial, sans-serif;
+    height: 100vh;
+    margin: 0;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+#weatherContainer {
+    text-align: center;
+    background-color: rgba(0, 0, 0, 0.7);
+    padding: 25px;
+    border-radius: 15px;
+    width: 350px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+}
+
+#weatherContainer:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+}
+
+h1 {
+    font-size: 26px;
+    margin-bottom: 15px;
+    color: #ffffff;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+#weatherDisplay {
+    font-size: 18px;
+    margin-bottom: 15px;
+}
+
+.time-display {
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 10px;
+    border-radius: 8px;
+    margin: 10px 0;
+    border-left: 3px solid #4CAF50;
+}
+
+#currentTime {
+    font-size: 20px;
+    font-weight: bold;
+    color: #4CAF50;
+    margin-bottom: 5px;
+}
+
+#currentWeather {
+    font-weight: bold;
+    font-size: 22px;
+    color: #64B5F6;
+    margin-bottom: 10px;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.weather-icon {
+    font-size: 36px;
+    margin: 8px 0;
+    display: block;
+}
+
+.weather-stats {
+    display: flex;
+    justify-content: space-between;
+    margin: 15px 0;
+    gap: 10px;
+}
+
+.stat-item {
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 8px;
+    border-radius: 6px;
+    flex: 1;
+    text-align: center;
+}
+
+.stat-value {
+    font-size: 16px;
+    font-weight: bold;
+    color: #FFB74D;
+}
+
+.stat-label {
+    font-size: 11px;
+    color: #ccc;
+    margin-top: 3px;
+}
+
+#timestamp {
+    margin-top: 15px;
+    font-size: 14px;
+    color: #ddd;
+    background-color: rgba(255, 255, 255, 0.05);
+    padding: 8px;
+    border-radius: 5px;
+}
+
+.controls {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.button-cls {
+    background-color: #444;
+    color: #fff;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: bold;
+    flex: 1;
+    max-width: 120px;
+}
+    
+.button-cls:hover {
+    background-color: #ff0000;
+    transform: translateY(-1px);
+    box-shadow: 0 3px 8px rgba(255, 0, 0, 0.3);
+}
+
+.button-cls:active {
+    transform: translateY(0);
+}
+
+.button-secondary {
+    background-color: #666;
+}
+
+.button-secondary:hover {
+    background-color: #2196F3;
+    box-shadow: 0 3px 8px rgba(33, 150, 243, 0.3);
+}
+
+.weather-update {
+    animation: weatherChange 0.6s ease-in-out;
+}
+
+@keyframes weatherChange {
+    0% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.7; transform: scale(1.05); }
+    100% { opacity: 1; transform: scale(1); }
+}
+
+.fade-in {
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { 
+        opacity: 0; 
+        transform: translateY(-10px); 
+    }
+    to { 
+        opacity: 1; 
+        transform: translateY(0); 
+    }
+}
+
+@media (max-width: 400px) {
+    #weatherContainer {
+        width: 90%;
+        padding: 20px;
+    }
+    
+    .controls {
+        flex-direction: column;
+    }
+    
+    .button-cls {
+        max-width: none;
+    }
+}
+
+.connection-status {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: #4CAF50;
+    box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
+}
+
+.connection-status.disconnected {
+    background-color: #f44336;
+    box-shadow: 0 0 5px rgba(244, 67, 54, 0.5);
+}
+
+
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 10px 15px;
+    border-radius: 5px;
+    border-left: 4px solid #4CAF50;
+    z-index: 1000;
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
