@@ -6,7 +6,7 @@
 }
     
 body {
-    display: none; /* Hidden until JS shows it */ 
+    display: none; /* Hidden until JS shows it */  
     background: rgba(0, 0, 0, 0.8);
     color: white;
     font-family: Arial, sans-serif;

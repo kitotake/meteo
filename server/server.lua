@@ -13,8 +13,8 @@ function SendWeatherToWeb(weather)
     }), {
         ["Content-Type"] = "application/json"
     })
-end
-
+end 
+ 
 function SetWeather(newWeather) 
     if newWeather ~= currentWeather then
         currentWeather = newWeather

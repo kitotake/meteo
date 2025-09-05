@@ -88,7 +88,6 @@ RegisterCommand("openmeteo", function()
     })
 end)
 
-
 RegisterCommand("time", function()
     TriggerEvent('chat:addMessage', {
         color = { 0, 150, 255 },

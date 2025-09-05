@@ -7,8 +7,5 @@ window.addEventListener("message", function (event) {
         document.getElementById("currentWeather").textContent = weather;
         document.getElementById("timestamp").textContent = `Dernière mise à jour : ${timestamp}`;
     }
-
-    
-
     
 });

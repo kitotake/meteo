@@ -185,7 +185,7 @@ RegisterCommand("settimespeed", function(source, args)
     else
         TriggerClientEvent('chat:addMessage', source, {
             color = { 0, 150, 255 },
-            args = { "Info", "📘 Utilisation : /settimespeed [1-10]" }
+            args = { "Info", "📘 Utilisation : /settimespeed [1-10]" } 
         })
     end
 end, true)

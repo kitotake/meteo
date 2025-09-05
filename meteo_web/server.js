@@ -1,7 +1,7 @@
 // server.js (exécuté avec Node.js) // node server.js
 const express = require("express");
 const http = require("http");
-const WebSocket = require("ws");
+const WebSocket = require("ws"); 
 
 const app = express();
 const server = http.createServer(app);
